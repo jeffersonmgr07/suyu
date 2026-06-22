@@ -1,0 +1,37 @@
+RUTAS EXACTAS DE IMÁGENES QUE USA ESTA VERSIÓN
+
+1) Logo del header
+Subir/reemplazar exactamente aquí:
+assets/img/logo-suyu-street.png
+
+Este será el único logo visible en la barra de navegación. Ya no se muestra texto como logo.
+
+2) Logo blanco del footer
+Subir/reemplazar exactamente aquí:
+assets/img/logo-suyu-street-white.png
+
+Debe ser PNG con logo blanco y fondo transparente para que se vea bien sobre el footer negro.
+
+3) Imagen principal del Home
+Subir/reemplazar exactamente aquí:
+assets/img/heroes/hero-nueva-coleccion.jpg
+
+El index.html ahora la carga DIRECTAMENTE con background-image en línea. Ya no depende de --hero-img para esta imagen principal.
+
+4) Imagen de lanzamiento Qosqo Street
+assets/img/heroes/lanzamiento-qosqo-street.jpg
+
+5) Imagen colección destacada Andes Studio
+assets/img/heroes/coleccion-andes-studio.jpg
+
+6) Imagen Arma el look completo
+assets/img/heroes/arma-el-look.jpg
+
+IMÁGENES ANTIGUAS QUE NO USA EL HOME ACTUAL
+assets/img/hero-1.jpg
+assets/img/hero-2.jpg
+assets/img/hero-3.jpg
+assets/img/hero-logo.jpg
+assets/img/logo-suyu-streetwear.png
+
+Puedes dejarlas sin problema, pero ya no son necesarias para el header ni para el hero actual.
