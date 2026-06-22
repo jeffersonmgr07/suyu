@@ -1,5 +1,6 @@
 window.SUYU_CONFIG = {
   API_URL: 'https://script.google.com/macros/s/AKfycbxL1p4ZrQvOyHITHysayjkidYPh1UzLBcxa5Qv6-Hw_wdJhP9ylHq-NPm3cahgpZZ6k/exec',
+  SITE_URL: 'https://jeffersonmgr07.github.io/suyu',
   CACHE_MINUTES: 10,
   DEFAULT_CURRENCY: 'USD',
   SHIPPING_FREE_FROM_USD: 120,

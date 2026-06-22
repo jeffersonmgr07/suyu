@@ -1,0 +1,13 @@
+Archivos modificados para subir:
+- assets/css/styles.css
+- assets/js/app.js
+- assets/js/config.js
+- google-apps-script/Code.gs
+- google-apps-script/appsscript.json
+
+Para corregir el error de permisos de PayPal/Mercado Pago:
+1. Pega el nuevo Code.gs en Apps Script.
+2. En Configuración del proyecto, activa "Mostrar archivo de manifiesto appsscript.json" y pega el appsscript.json.
+3. Ejecuta manualmente la función autorizarPasarelas().
+4. Acepta los permisos.
+5. Implementa nuevamente como Web App: Ejecutar como Yo / Acceso Cualquier usuario.

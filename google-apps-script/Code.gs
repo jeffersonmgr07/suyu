@@ -28,7 +28,7 @@ function doGet(e) {
     if (action === 'verifyMercadoPago') return jsonResponse(verifyMercadoPagoPayment_(e.parameter));
     return jsonResponse({ ok: false, error: 'Acción no válida' }, 400);
   } catch (err) {
-    return jsonResponse({ ok: false, error: err.message }, 500);
+    return jsonResponse({ ok: false, error: friendlyError_(err) }, 500);
   }
 }
 
@@ -45,8 +45,16 @@ function doPost(e) {
     if (action === 'logEvent') return jsonResponse(logEvent_(body));
     return jsonResponse({ ok: false, error: 'Acción no válida' }, 400);
   } catch (err) {
-    return jsonResponse({ ok: false, error: err.message }, 500);
+    return jsonResponse({ ok: false, error: friendlyError_(err) }, 500);
   }
+}
+
+function friendlyError_(err) {
+  const msg = err && err.message ? String(err.message) : String(err || 'Error interno');
+  if (/UrlFetchApp|permission|permis/i.test(msg)) {
+    return 'Permiso pendiente de Apps Script para conectar con pasarelas. Ejecuta autorizarPasarelas() una vez desde el editor, acepta los permisos y vuelve a implementar la Web App. Detalle: ' + msg;
+  }
+  return msg;
 }
 
 function jsonResponse(obj, status) {
@@ -281,6 +289,13 @@ function logEvent_(body) {
  * MP_ACCESS_TOKEN
  * SITE_URL=https://your-github-pages-domain
  */
+
+/** Ejecuta esta función una vez desde el editor de Apps Script para autorizar conexiones externas. */
+function autorizarPasarelas() {
+  const res = UrlFetchApp.fetch('https://www.googleapis.com/discovery/v1/apis', { muteHttpExceptions: true });
+  return 'Permiso UrlFetchApp autorizado. Código: ' + res.getResponseCode();
+}
+
 function prop_(key, fallback) {
   const value = PropertiesService.getScriptProperties().getProperty(key);
   return value || fallback || '';
@@ -320,7 +335,7 @@ function paypalToken_() {
     muteHttpExceptions: true
   });
   const data = JSON.parse(res.getContentText());
-  if (!data.access_token) throw new Error('PayPal no devolvió access_token: ' + res.getContentText());
+  if (res.getResponseCode() >= 400 || !data.access_token) throw new Error('PayPal no devolvió access_token. Revisa PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET y PAYPAL_ENV. Respuesta: ' + res.getContentText());
   return data.access_token;
 }
 
@@ -343,6 +358,7 @@ function createPayPalOrder_(body) {
     payload: JSON.stringify(payload), muteHttpExceptions: true
   });
   const data = JSON.parse(res.getContentText());
+  if (res.getResponseCode() >= 400) throw new Error('PayPal rechazó la creación del pedido. Revisa moneda, monto y credenciales. Respuesta: ' + res.getContentText());
   const approve = (data.links || []).find(l => l.rel === 'approve');
   if (!approve) throw new Error('PayPal no devolvió enlace de aprobación: ' + res.getContentText());
   updatePaymentId_(order.order_id, data.id, 'PayPal');
@@ -397,7 +413,7 @@ function createMercadoPagoPreference_(body) {
     payload: JSON.stringify(payload), muteHttpExceptions: true
   });
   const data = JSON.parse(res.getContentText());
-  if (!data.init_point && !data.sandbox_init_point) throw new Error('Mercado Pago no devolvió init_point: ' + res.getContentText());
+  if (res.getResponseCode() >= 400 || (!data.init_point && !data.sandbox_init_point)) throw new Error('Mercado Pago no devolvió init_point. Revisa MP_ACCESS_TOKEN, país/moneda y credenciales. Respuesta: ' + res.getContentText());
   updatePaymentId_(order.order_id, data.id, 'Mercado Pago');
   return { ok: true, gateway: 'Mercado Pago', order_id: order.order_id, payment_id: data.id, redirect_url: data.init_point || data.sandbox_init_point };
 }
