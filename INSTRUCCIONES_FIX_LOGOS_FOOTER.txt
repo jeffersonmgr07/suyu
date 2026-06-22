@@ -1,0 +1,30 @@
+FIX LOGOS + FOOTER
+
+Sube/reemplaza estos archivos:
+
+components/header.html
+components/footer.html
+assets/css/styles.css
+assets/js/components-loader.js
+
+Rutas oficiales de logos:
+
+Header:
+/suyu/assets/img/logo-suyu.png
+En el proyecto GitHub debe estar exactamente en:
+assets/img/logo-suyu.png
+
+Footer:
+/suyu/assets/img/logo-suyu-white.png
+En el proyecto GitHub debe estar exactamente en:
+assets/img/logo-suyu-white.png
+
+Logo negro reservado:
+assets/img/logo-suyu-black.png
+
+IMPORTANTE:
+El nombre correcto es SUYU con U: logo-suyu.png
+Si subiste logo-suyo.png con O, renómbralo.
+De todas formas este parche intenta fallback a logo-suyo.png si el archivo oficial no existe.
+
+El footer queda forzado a fondo negro también con estilo inline y CSS !important para evitar que vuelva a aparecer blanco si hay una regla antigua.
