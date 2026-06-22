@@ -1,0 +1,50 @@
+ARCHIVOS MODIFICADOS / AGREGADOS - COMPONENTES HTML
+
+Este paquete cambia el proyecto a la estructura con carpeta components/.
+
+Nuevos componentes:
+- components/header.html
+- components/footer.html
+- components/bottomnav.html
+
+Nuevo loader:
+- assets/js/components-loader.js
+
+Archivos modificados:
+- index.html
+- catalogo.html
+- producto.html
+- buscar.html
+- favoritos.html
+- carrito.html
+- checkout.html
+- cuenta.html
+- login.html
+- gracias.html
+- pruebas.html
+- assets/js/app.js
+- assets/css/styles.css
+
+Cómo se mantiene ahora:
+1. Para cambiar el menú, logo superior, barra superior o navegación desktop, edita:
+   components/header.html
+
+2. Para cambiar el footer, contacto, links legales o empresa, edita:
+   components/footer.html
+
+3. Para cambiar la navegación inferior móvil, edita:
+   components/bottomnav.html
+
+4. No edites header/footer dentro de cada HTML. Cada HTML solo contiene:
+   <div data-component="header"></div>
+   <div data-component="footer"></div>
+   <div data-component="bottomnav"></div>
+
+Logos que debes subir/reemplazar:
+- Header: assets/img/logo-suyu.png
+- Footer blanco: assets/img/logo-suyu-white.png
+
+Hero principal del index:
+- assets/img/heroes/hero-nueva-coleccion.jpg
+
+El index ya carga esta imagen directamente en background-image, sin depender de --hero-img.

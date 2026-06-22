@@ -1,0 +1,36 @@
+LOGOS OFICIALES - SUYU
+
+Sube/reemplaza estas imágenes en tu proyecto GitHub respetando exactamente el nombre, minúsculas y extensión:
+
+1) Logo del header / barra de navegación
+Ruta exacta:
+assets/img/logo-suyu.png
+
+Se llama desde:
+components/header.html
+
+Uso recomendado:
+PNG con fondo transparente. Logo principal para fondo claro.
+
+2) Logo del footer
+Ruta exacta:
+assets/img/logo-suyu-white.png
+
+Se llama desde:
+components/footer.html
+
+Uso recomendado:
+PNG blanco con fondo transparente. Se usa sobre footer negro.
+
+3) Logo negro para comprobantes, carrito, facturas u otras áreas internas que necesiten logo
+Ruta exacta:
+assets/img/logo-suyu-black.png
+
+Estado actual:
+No hay una página activa del proyecto que esté llamando este logo todavía. Se deja definido como ruta estándar para próximas funciones de factura/comprobante.
+
+Archivos modificados en este paquete:
+components/header.html
+components/footer.html
+INSTRUCCIONES_COMPONENTES_HTML.txt
+INSTRUCCIONES_LOGOS_ACTUALIZADAS.txt
