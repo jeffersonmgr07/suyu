@@ -1,0 +1,20 @@
+Corrección aplicada:
+
+1. Reemplazar solamente este archivo en GitHub:
+   assets/js/components.js
+
+2. El header ahora usa exactamente:
+   assets/img/logo-suyu.png
+
+3. El footer ahora usa exactamente:
+   assets/img/logo-suyu-white.png
+
+4. El footer vuelve a usar la clase correcta:
+   site-footer
+
+Motivo del error:
+El index.html carga assets/js/components.js. Ese archivo estaba generando el header y footer por JavaScript, y todavía apuntaba a logos antiguos:
+- assets/img/logo-suyu-street.png
+- assets/img/logo-suyu-street-white.png
+
+Además, el footer se estaba generando con class="footer" en lugar de class="site-footer", por eso no tomaba el fondo negro definido en el CSS.
