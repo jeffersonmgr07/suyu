@@ -1,34 +1,53 @@
 # Suyu Streetwear
 
-Web app responsive para ecommerce de Suyu Streetwear.
+Proyecto web conectado a Google Sheets mediante Apps Script.
 
-## Publicación en GitHub Pages
-1. Sube todos los archivos a un repositorio.
-2. En GitHub: Settings > Pages > Deploy from branch > main / root.
-3. Abre la URL pública generada por GitHub Pages.
+## Backend activo
 
-## Base de datos Google Sheets + Apps Script
-1. Crea una Google Sheet llamada `Suyu Streetwear DB`.
-2. Abre Extensiones > Apps Script.
-3. Copia el contenido de `backend/Code.gs`.
-4. Ejecuta `setupSheets()` una vez y autoriza permisos.
-5. Implementar > Nueva implementación > Aplicación web.
-6. Acceso: `Cualquier persona`.
-7. Copia la URL del Web App y pégala en `assets/js/config.js` en `apiUrl`.
+La URL configurada está en `assets/js/config.js`:
 
-## Pasarelas de pago
-- PayPal: pega tu Client ID en `paypalClientId`.
-- Mercado Pago: pega tu Public Key o URL de Checkout Pro en `mercadoPagoPublicKey` / `mercadoPagoCheckoutUrl`.
+`https://script.google.com/macros/s/AKfycbxL1p4ZrQvOyHITHysayjkidYPh1UzLBcxa5Qv6-Hw_wdJhP9ylHq-NPm3cahgpZZ6k/exec`
 
-Mercado Pago opera oficialmente en Argentina, Brasil, Chile, Colombia, México, Perú y Uruguay. PayPal indica disponibilidad en más de 200 países/regiones y soporte de 25 monedas. Verificar siempre las condiciones de tu cuenta antes de activar cobros.
+## Productos
 
-## Archivos principales
-- `index.html`: Home final orientada a conversión.
-- `catalogo.html`: catálogo con filtros visuales.
-- `producto.html`: ficha de producto con tallas y personalización.
-- `carrito.html`: carrito.
-- `checkout.html`: checkout.
-- `favoritos.html`: lista de deseos.
-- `buscar.html`: búsqueda.
-- `login.html`: acceso.
-- `cuenta.html`: cuenta del cliente.
+Los productos se leen desde la hoja `Productos` del Google Sheet conectado al Apps Script. Las columnas importantes son:
+
+- `id`
+- `sku`
+- `slug`
+- `nombre`
+- `categoria`
+- `subcategoria`
+- `coleccion`
+- `genero`
+- `descripcion_corta`
+- `descripcion_larga`
+- `precio_base_usd`
+- `precio_base_pen`
+- `precio_oferta_usd`
+- `precio_oferta_pen`
+- `tallas_disponibles`
+- `trenzas_opciones`
+- `imagenes`
+- `imagen_principal`
+- `personalizable`
+- `estado`
+- `destacado`
+- `nuevo`
+- `top_ventas`
+
+## Imágenes
+
+Sube las imágenes a:
+
+`assets/img/productos/`
+
+Ejemplo:
+
+`assets/img/productos/SUYU-QOSQO-URBAN-GR-001-01.jpg`
+
+En la hoja, en `imagenes`, coloca varias rutas separadas por `|`.
+
+## Publicación
+
+Sube todos los archivos de esta carpeta a GitHub Pages.

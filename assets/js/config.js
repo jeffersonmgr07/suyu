@@ -1,12 +1,21 @@
 window.SUYU_CONFIG = {
-  apiUrl: '', // Pega aquí la URL del Web App de Apps Script después de publicarlo.
-  paypalClientId: '',
-  mercadoPagoPublicKey: '',
-  mercadoPagoCheckoutUrl: '',
-  brand: 'Suyu Streetwear',
-  baseCurrency: 'USD',
-  exchange: {USD:1, PEN:3.75, CLP:940, ARS:1200, COP:4100, MXN:18.5, BRL:5.4, UYU:40.5, EUR:.92, GBP:.78},
-  countryCurrencies: {PE:['PEN','USD'], CL:['CLP','USD'], AR:['ARS','USD'], CO:['COP','USD'], MX:['MXN','USD'], BR:['BRL','USD'], UY:['UYU','USD'], US:['USD'], BO:['USD'], EC:['USD'], ES:['EUR','USD'], GB:['GBP','USD']},
-  mercadoPagoCountries: ['AR','BR','CL','CO','MX','PE','UY'],
-  paypalCurrencies: ['USD','EUR','GBP','CAD','AUD','BRL','MXN','JPY','CHF','SGD','HKD','NZD','SEK','NOK','DKK','PLN','CZK','HUF','ILS','PHP','THB','TWD']
+  API_URL: 'https://script.google.com/macros/s/AKfycbxL1p4ZrQvOyHITHysayjkidYPh1UzLBcxa5Qv6-Hw_wdJhP9ylHq-NPm3cahgpZZ6k/exec',
+  CACHE_MINUTES: 10,
+  DEFAULT_CURRENCY: 'USD',
+  SHIPPING_FREE_FROM_USD: 120,
+  SHIPPING_USD: 12,
+  PAYPAL_ENABLED: true,
+  MERCADOPAGO_ENABLED: true,
+  MERCADOPAGO_COUNTRIES: ['PE','AR','BR','CL','CO','MX','UY'],
+  CURRENCIES: {
+    USD: { symbol: 'US$', rate: 1, decimals: 2 },
+    PEN: { symbol: 'S/', rate: 3.72, decimals: 2 },
+    CLP: { symbol: '$', rate: 940, decimals: 0 },
+    ARS: { symbol: '$', rate: 1200, decimals: 0 },
+    COP: { symbol: '$', rate: 4100, decimals: 0 },
+    MXN: { symbol: '$', rate: 18.5, decimals: 2 },
+    BRL: { symbol: 'R$', rate: 5.45, decimals: 2 },
+    UYU: { symbol: '$U', rate: 40, decimals: 0 },
+    EUR: { symbol: '€', rate: 0.93, decimals: 2 }
+  }
 };
