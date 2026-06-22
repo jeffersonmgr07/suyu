@@ -10,13 +10,35 @@ html,body{max-width:100%;overflow-x:hidden}.nav,.container{width:100%}.currency-
 @media(max-width:560px){.footer-inner{grid-template-columns:1fr}.footer-brand{grid-column:auto}}
 
 
-/* FIX definitivo logos y footer GitHub Pages */
-.brand-logo img{display:block!important;height:46px!important;width:auto!important;max-width:190px!important;object-fit:contain!important;}
-.brand-text-fallback{font-weight:950;font-size:30px;letter-spacing:.08em;color:#111;line-height:1;}
-.site-footer{background:#050505!important;color:#fff!important;margin-top:70px!important;border-top:4px solid transparent!important;border-image:linear-gradient(90deg,var(--red),var(--gold),var(--teal)) 1 0 0 0!important;}
-.site-footer *{box-sizing:border-box;}
-.site-footer a{color:#e8e8e8!important;}
-.site-footer p,.site-footer span,.site-footer .footer-col a{color:#cfcfcf!important;}
-.site-footer h3{color:#fff!important;}
-.footer-logo{display:block!important;height:54px!important;width:auto!important;max-width:230px!important;object-fit:contain!important;margin-bottom:20px!important;}
-@media(max-width:900px){.brand-logo img{height:38px!important;max-width:132px!important}.footer-logo{height:44px!important}}
+/* === SUYU FIX LOGO + FOOTER 20260622-logo-footer-v3 === */
+html, body { max-width: 100% !important; overflow-x: hidden !important; }
+.header, .site-header { background:#fff !important; color:#111 !important; }
+.brand-logo { display:flex !important; align-items:center !important; min-width:154px !important; text-decoration:none !important; }
+.brand-logo img { display:block !important; visibility:visible !important; opacity:1 !important; height:48px !important; width:auto !important; max-width:220px !important; object-fit:contain !important; background:transparent !important; }
+.brand-logo .brand-fallback { display:none !important; }
+.site-footer, footer.site-footer { background:#050505 !important; color:#fff !important; margin-top:70px !important; border-top:4px solid #050505 !important; border-image:none !important; }
+.site-footer::before { content:""; display:block; height:4px; background:linear-gradient(90deg,var(--red),var(--gold),var(--teal)); }
+.site-footer .footer-inner { max-width:var(--max) !important; margin:auto !important; padding:56px 28px 38px !important; display:grid !important; grid-template-columns:1.4fr repeat(4,1fr) !important; gap:34px !important; background:#050505 !important; color:#fff !important; }
+.site-footer .footer-brand, .site-footer .footer-col, .site-footer .footer-bottom { background:#050505 !important; color:#fff !important; }
+.site-footer .footer-logo { display:block !important; visibility:visible !important; opacity:1 !important; height:56px !important; width:auto !important; max-width:240px !important; object-fit:contain !important; margin:0 0 20px !important; background:transparent !important; }
+.site-footer p, .site-footer span { color:#cfcfcf !important; }
+.site-footer a { color:#e8e8e8 !important; text-decoration:none !important; }
+.site-footer a:hover { color:#fff !important; text-decoration:underline !important; }
+.site-footer .footer-col h3 { color:#fff !important; font-size:13px !important; text-transform:uppercase !important; letter-spacing:.18em !important; margin:0 0 18px !important; }
+.site-footer .footer-col a { display:block !important; margin:10px 0 !important; font-size:14px !important; }
+.site-footer .footer-contact { display:grid !important; gap:8px !important; }
+.site-footer .footer-bottom { max-width:var(--max) !important; margin:auto !important; padding:20px 28px 28px !important; border-top:1px solid rgba(255,255,255,.14) !important; display:flex !important; justify-content:space-between !important; gap:16px !important; color:#a9a9a9 !important; font-size:13px !important; }
+@media(max-width:900px){
+  .brand-logo { min-width:auto !important; }
+  .brand-logo img { height:38px !important; max-width:142px !important; }
+  .site-footer { margin-top:44px !important; }
+  .site-footer .footer-inner { grid-template-columns:1fr 1fr !important; gap:26px !important; padding:42px 18px 28px !important; }
+  .site-footer .footer-brand { grid-column:1/-1 !important; }
+  .site-footer .footer-bottom { padding:18px 18px 90px !important; flex-direction:column !important; }
+  .site-footer .footer-logo { height:48px !important; max-width:210px !important; }
+}
+@media(max-width:560px){
+  .site-footer .footer-inner { grid-template-columns:1fr !important; }
+  .site-footer .footer-brand { grid-column:auto !important; }
+}
+/* === END SUYU FIX LOGO + FOOTER === */
