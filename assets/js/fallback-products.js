@@ -28,4 +28,16 @@ window.SUYU_FALLBACK_PRODUCTS = [
     imagen_principal:'assets/img/productos/SUYU-INTI-TREK-NG-001-01.jpg', imagenes:['assets/img/productos/SUYU-INTI-TREK-NG-001-01.jpg','assets/img/productos/SUYU-INTI-TREK-NG-001-02.jpg'],
     personalizable:'SI', personalizacion_precio_usd:6, personalizacion_precio_pen:20, estado:'ACTIVO', destacado:'SI', nuevo:'NO', top_ventas:'SI', tags:['inti','trek','negro','outdoor']
   }
+,
+  {
+    id:'SUYU-URBAN-TECH-BL-001', sku:'SUYU-URBAN-TECH-BL-001', slug:'urban-tech-blanco', nombre:'Zapatillas Urban Tech Blanco', modelo:'Urban', version:'Tech Blanco', categoria:'Zapatillas', subcategoria:'Sneakers', coleccion:'Studio Streetwear', genero:'Unisex',
+    descripcion_corta:'Sneaker blanco de líneas urbanas con acabado limpio y pasadores personalizables.',
+    descripcion_larga:'Urban Tech Blanco combina una base limpia con detalles sutiles para un look diario. Diseñada para combinar con prendas urbanas, gorras y accesorios de temporada.',
+    precio_base_usd:76, precio_base_pen:282, precio_oferta_usd:'', precio_oferta_pen:'', moneda_base:'USD',
+    tallas_disponibles:['US 6','US 6.5','US 7','US 7.5','US 8','US 8.5','US 9','US 10','US 11'],
+    colores_producto:['Blanco'], trenzas_opciones:[{nombre:'Original blanco',hex:'#F7F7F2'},{nombre:'Gris',hex:'#777777'},{nombre:'Negro',hex:'#111111'}], trenza_default:'Original blanco',
+    imagen_principal:'assets/img/productos/SUYU-URBAN-TECH-BL-001-01.jpg', imagenes:['assets/img/productos/SUYU-URBAN-TECH-BL-001-01.jpg','assets/img/productos/SUYU-URBAN-TECH-BL-001-02.jpg'],
+    personalizable:'SI', personalizacion_precio_usd:6, personalizacion_precio_pen:20, estado:'ACTIVO', destacado:'SI', nuevo:'SI', top_ventas:'SI', tags:['urban','tech','blanco','sneakers']
+  }
+
 ];

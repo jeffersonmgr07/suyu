@@ -1,0 +1,35 @@
+IMÁGENES QUE DEBES SUBIR AL PROYECTO
+
+Logo de navegación:
+- assets/img/logo-suyu-streetwear.png
+
+Imágenes hero del home:
+- assets/img/heroes/hero-nueva-coleccion.jpg
+  Uso: fondo principal detrás de “Nueva colección / Suyu Streetwear”.
+- assets/img/heroes/lanzamiento-qosqo-street.jpg
+  Uso: tarjeta “Lanzamiento / Qosqo Street”.
+- assets/img/heroes/coleccion-andes-studio.jpg
+  Uso: bloque “Colección destacada / Andes Studio”.
+- assets/img/heroes/arma-el-look.jpg
+  Uso: bloque “Arma el look completo”.
+
+Imágenes de productos:
+- assets/img/productos/SKU-01.jpg
+- assets/img/productos/SKU-02.jpg
+- assets/img/productos/SKU-03.jpg
+Ejemplo: assets/img/productos/SUYU-QOSQO-URBAN-GR-001-01.jpg
+Usa el mismo nombre en Google Sheets en las columnas imagen_principal e imagenes.
+
+PÁGINA OCULTA PARA PRUEBAS DE PAGO
+- pruebas.html
+Tiene un producto de prueba de US$ 1.00 y no aparece en menús ni catálogo.
+Abre: /suyu/pruebas.html
+
+CAMBIOS INCLUIDOS
+- Header con logo por imagen.
+- Menús desplegables en desktop: Mujer, Hombre, Unisex, Zapatillas y Colecciones.
+- Íconos SVG más limpios para buscar, cuenta, favoritos y carrito.
+- Top ventas y Nuevos lanzamientos limitados a 4 productos.
+- Selector de moneda más compacto.
+- Corrección de desborde horizontal en móvil.
+- Esquinas ligeramente redondeadas en tarjetas, botones, imágenes y bloques.
