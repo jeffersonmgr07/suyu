@@ -1,0 +1,16 @@
+Archivos modificados/agregados para integración real de pagos:
+
+SUBIR A GITHUB:
+- checkout.html
+- carrito.html
+- gracias.html
+- assets/js/app.js
+- assets/js/config.js
+
+ACTUALIZAR EN APPS SCRIPT:
+- google-apps-script/Code.gs
+
+INSTRUCCIONES:
+- INSTRUCCIONES_PASARELAS.md
+
+Sí: debes modificar/reemplazar el código de Apps Script con el Code.gs incluido, porque ahí están las funciones reales de PayPal y Mercado Pago.

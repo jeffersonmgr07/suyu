@@ -24,6 +24,8 @@ function doGet(e) {
     if (action === 'userOrders') return jsonResponse(getUserOrders_(e.parameter.user_id || e.parameter.email));
     if (action === 'wishlist') return jsonResponse(getWishlist_(e.parameter.user_id));
     if (action === 'config') return jsonResponse(getConfig_());
+    if (action === 'paypalReturn') return handlePayPalReturn_(e.parameter);
+    if (action === 'verifyMercadoPago') return jsonResponse(verifyMercadoPagoPayment_(e.parameter));
     return jsonResponse({ ok: false, error: 'Acción no válida' }, 400);
   } catch (err) {
     return jsonResponse({ ok: false, error: err.message }, 500);
@@ -39,6 +41,7 @@ function doPost(e) {
     if (action === 'toggleWishlist') return jsonResponse(toggleWishlist_(body));
     if (action === 'createOrder') return jsonResponse(createOrder_(body));
     if (action === 'markOrderPaid') return jsonResponse(markOrderPaid_(body));
+    if (action === 'createPayment') return jsonResponse(createPayment_(body));
     if (action === 'logEvent') return jsonResponse(logEvent_(body));
     return jsonResponse({ ok: false, error: 'Acción no válida' }, 400);
   } catch (err) {
@@ -267,4 +270,157 @@ function logEvent_(body) {
     detalle: body.detalle || '', ip_pais: body.ip_pais || ''
   });
   return { ok: true };
+}
+
+
+/**
+ * PAYMENT GATEWAYS - REAL CHECKOUT
+ * Set credentials in Apps Script: Project Settings > Script properties.
+ * Required properties:
+ * PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_ENV=sandbox|live
+ * MP_ACCESS_TOKEN
+ * SITE_URL=https://your-github-pages-domain
+ */
+function prop_(key, fallback) {
+  const value = PropertiesService.getScriptProperties().getProperty(key);
+  return value || fallback || '';
+}
+
+function createPayment_(body) {
+  if (!body.order_id) throw new Error('Falta order_id');
+  const gateway = String(body.pasarela || body.gateway || '').toLowerCase();
+  if (gateway.indexOf('paypal') >= 0) return createPayPalOrder_(body);
+  if (gateway.indexOf('mercado') >= 0) return createMercadoPagoPreference_(body);
+  throw new Error('Pasarela no soportada');
+}
+
+function getOrderById_(orderId) {
+  const rows = rowsAsObjects_(sheet_(SHEETS.ORDERS));
+  const order = rows.find(o => String(o.order_id) === String(orderId));
+  if (!order) throw new Error('Orden no encontrada');
+  return order;
+}
+
+function getOrderItemsById_(orderId) {
+  return rowsAsObjects_(sheet_(SHEETS.ITEMS)).filter(i => String(i.order_id) === String(orderId));
+}
+
+function paypalBase_() {
+  return prop_('PAYPAL_ENV', 'sandbox') === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+}
+
+function paypalToken_() {
+  const id = prop_('PAYPAL_CLIENT_ID');
+  const secret = prop_('PAYPAL_CLIENT_SECRET');
+  if (!id || !secret) throw new Error('Faltan PAYPAL_CLIENT_ID o PAYPAL_CLIENT_SECRET en Script properties');
+  const res = UrlFetchApp.fetch(paypalBase_() + '/v1/oauth2/token', {
+    method: 'post',
+    headers: { Authorization: 'Basic ' + Utilities.base64Encode(id + ':' + secret) },
+    payload: { grant_type: 'client_credentials' },
+    muteHttpExceptions: true
+  });
+  const data = JSON.parse(res.getContentText());
+  if (!data.access_token) throw new Error('PayPal no devolvió access_token: ' + res.getContentText());
+  return data.access_token;
+}
+
+function createPayPalOrder_(body) {
+  const order = getOrderById_(body.order_id);
+  const token = paypalToken_();
+  const siteUrl = String(body.site_url || prop_('SITE_URL') || '').replace(/\/$/, '');
+  if (!siteUrl) throw new Error('Falta SITE_URL en Script properties o site_url en el request');
+  const amount = Number(order.total || body.total || 0).toFixed(2);
+  const currency = String(order.moneda || body.moneda || 'USD').toUpperCase();
+  const returnUrl = ScriptApp.getService().getUrl() + '?action=paypalReturn&order_id=' + encodeURIComponent(order.order_id) + '&return_url=' + encodeURIComponent(siteUrl + '/gracias.html');
+  const cancelUrl = siteUrl + '/checkout.html?payment=cancelled&order_id=' + encodeURIComponent(order.order_id);
+  const payload = {
+    intent: 'CAPTURE',
+    purchase_units: [{ reference_id: order.order_id, amount: { currency_code: currency, value: amount } }],
+    application_context: { brand_name: 'Suyu Streetwear', user_action: 'PAY_NOW', return_url: returnUrl, cancel_url: cancelUrl }
+  };
+  const res = UrlFetchApp.fetch(paypalBase_() + '/v2/checkout/orders', {
+    method: 'post', contentType: 'application/json', headers: { Authorization: 'Bearer ' + token },
+    payload: JSON.stringify(payload), muteHttpExceptions: true
+  });
+  const data = JSON.parse(res.getContentText());
+  const approve = (data.links || []).find(l => l.rel === 'approve');
+  if (!approve) throw new Error('PayPal no devolvió enlace de aprobación: ' + res.getContentText());
+  updatePaymentId_(order.order_id, data.id, 'PayPal');
+  return { ok: true, gateway: 'PayPal', order_id: order.order_id, payment_id: data.id, redirect_url: approve.href };
+}
+
+function handlePayPalReturn_(p) {
+  const orderId = p.order_id;
+  const paypalOrderId = p.token;
+  const returnUrl = p.return_url || prop_('SITE_URL') + '/gracias.html';
+  try {
+    const token = paypalToken_();
+    const res = UrlFetchApp.fetch(paypalBase_() + '/v2/checkout/orders/' + encodeURIComponent(paypalOrderId) + '/capture', {
+      method: 'post', contentType: 'application/json', headers: { Authorization: 'Bearer ' + token },
+      payload: '{}', muteHttpExceptions: true
+    });
+    const data = JSON.parse(res.getContentText());
+    const status = data.status || '';
+    if (status === 'COMPLETED') {
+      markOrderPaid_({ order_id: orderId, estado: 'PAGADO', pasarela: 'PayPal', payment_id: paypalOrderId, raw_response: data });
+      return HtmlService.createHtmlOutput('<script>location.replace(' + JSON.stringify(returnUrl + '?order_id=' + encodeURIComponent(orderId) + '&gateway=PayPal&status=paid') + ')</script>');
+    }
+    return HtmlService.createHtmlOutput('<script>location.replace(' + JSON.stringify(returnUrl + '?order_id=' + encodeURIComponent(orderId) + '&gateway=PayPal&status=pending') + ')</script>');
+  } catch (err) {
+    return HtmlService.createHtmlOutput('<script>location.replace(' + JSON.stringify(returnUrl + '?order_id=' + encodeURIComponent(orderId) + '&gateway=PayPal&status=error') + ')</script>');
+  }
+}
+
+function createMercadoPagoPreference_(body) {
+  const token = prop_('MP_ACCESS_TOKEN');
+  if (!token) throw new Error('Falta MP_ACCESS_TOKEN en Script properties');
+  const order = getOrderById_(body.order_id);
+  const items = getOrderItemsById_(body.order_id);
+  const siteUrl = String(body.site_url || prop_('SITE_URL') || '').replace(/\/$/, '');
+  if (!siteUrl) throw new Error('Falta SITE_URL en Script properties o site_url en el request');
+  const payload = {
+    external_reference: order.order_id,
+    items: items.map(i => ({
+      id: String(i.sku || i.product_id || ''), title: String(i.nombre || 'Suyu Streetwear'), quantity: Number(i.cantidad || 1),
+      currency_id: String(order.moneda || 'PEN').toUpperCase(), unit_price: Number(i.precio_unitario || 0)
+    })),
+    back_urls: {
+      success: siteUrl + '/gracias.html?order_id=' + encodeURIComponent(order.order_id) + '&gateway=Mercado%20Pago&status=approved',
+      pending: siteUrl + '/gracias.html?order_id=' + encodeURIComponent(order.order_id) + '&gateway=Mercado%20Pago&status=pending',
+      failure: siteUrl + '/checkout.html?order_id=' + encodeURIComponent(order.order_id) + '&payment=failure'
+    },
+    auto_return: 'approved',
+    payer: { email: order.email_cliente || body.email_cliente || '' }
+  };
+  const res = UrlFetchApp.fetch('https://api.mercadopago.com/checkout/preferences', {
+    method: 'post', contentType: 'application/json', headers: { Authorization: 'Bearer ' + token },
+    payload: JSON.stringify(payload), muteHttpExceptions: true
+  });
+  const data = JSON.parse(res.getContentText());
+  if (!data.init_point && !data.sandbox_init_point) throw new Error('Mercado Pago no devolvió init_point: ' + res.getContentText());
+  updatePaymentId_(order.order_id, data.id, 'Mercado Pago');
+  return { ok: true, gateway: 'Mercado Pago', order_id: order.order_id, payment_id: data.id, redirect_url: data.init_point || data.sandbox_init_point };
+}
+
+function verifyMercadoPagoPayment_(p) {
+  const token = prop_('MP_ACCESS_TOKEN');
+  if (!token) throw new Error('Falta MP_ACCESS_TOKEN en Script properties');
+  const paymentId = p.payment_id || p.collection_id;
+  const orderId = p.order_id || p.external_reference;
+  if (!paymentId) return { ok: false, error: 'Falta payment_id' };
+  const res = UrlFetchApp.fetch('https://api.mercadopago.com/v1/payments/' + encodeURIComponent(paymentId), {
+    method: 'get', headers: { Authorization: 'Bearer ' + token }, muteHttpExceptions: true
+  });
+  const data = JSON.parse(res.getContentText());
+  if (data.status === 'approved' && orderId) {
+    markOrderPaid_({ order_id: orderId, estado: 'PAGADO', pasarela: 'Mercado Pago', payment_id: paymentId, raw_response: data });
+  }
+  return { ok: true, status: data.status, payment_id: paymentId, order_id: orderId };
+}
+
+function updatePaymentId_(orderId, paymentId, gateway) {
+  const sh = sheet_(SHEETS.ORDERS);
+  const rows = rowsAsObjects_(sh);
+  const found = rows.find(o => String(o.order_id) === String(orderId));
+  if (found) updateObjectRow_(sh, found._row, { payment_id: paymentId, pasarela: gateway, fecha_actualizacion: new Date() });
 }
